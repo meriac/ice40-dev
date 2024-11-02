@@ -1,0 +1,12 @@
+set_io LED B6
+
+set_io LED_BAR[0] C6
+set_io LED_BAR[1] E3
+set_io LED_BAR[2] C2
+set_io LED_BAR[3] A1
+set_io LED_BAR[4] B4
+set_io LED_BAR[5] B5
+set_io LED_BAR[6] E1
+set_io LED_BAR[7] B1
+
+set_io CLK D1

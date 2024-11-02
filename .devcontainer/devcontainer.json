@@ -1,0 +1,9 @@
+{
+  "name": "ice40-dev",
+  "build": {
+    "dockerfile": "../container/Containerfile",
+    "context": "../container",
+  },
+  "features": {
+  }
+}

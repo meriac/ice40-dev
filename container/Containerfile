@@ -1,0 +1,43 @@
+#---
+FROM python:3-slim AS ice40-dev
+
+ARG USER=builder
+
+RUN apt-get update -qq \
+ && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
+	ca-certificates curl sudo git make \
+ && apt-get autoclean && apt-get clean && apt-get -y autoremove \
+ && update-ca-certificates \
+ && rm -rf /var/lib/apt/lists
+
+COPY sudoers /etc/
+RUN \
+	chmod 644 /etc/sudoers &&\
+	useradd -m ${USER} &&\
+	chsh -s /bin/bash ${USER}
+
+# update profile paths
+ARG PREFIX=/home/${USER}/.local
+RUN echo "\nexport PREFIX=${PREFIX}\nexport PATH=\$PREFIX/bin:\$PREFIX/usr/local/bin:\$PATH" >> /home/${USER}/.bashrc
+
+# install everything here ...
+ARG PREFIX=/home/${USER}/.local
+ENV PREFIX=${PREFIX}
+ENV PATH="$PATH:$PREFIX/bin"
+
+# ... but unattended
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Switch to unprivileged
+USER ${USER}
+WORKDIR /home/${USER}
+
+# Install apio and oss-cad-suite package
+RUN \
+	pip install -U apio &&\
+	apio install -a &&\
+	pip cache purge &&\
+	rm -rf .cache
+
+WORKDIR /workspaces
+CMD ["bash"]
